@@ -1,0 +1,82 @@
+
+services:
+
+    k1:
+        image: wurstmeister/kafka
+        container_name: k1
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=k1
+            - KAFKA_ZOOKEEPER_CONNECT=z1:2181, z2:2181, z3:2181
+        ports:
+            - 9092
+        depends_on:
+            - z1
+            - z2
+            - z3
+
+    k2:
+        image: wurstmeister/kafka
+        container_name: k2
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=k2
+            - KAFKA_ZOOKEEPER_CONNECT=z1:2181, z2:2181, z3:2181
+        ports:
+            - 9092
+        depends_on:
+            - z1
+            - z2
+            - z3
+
+    k3:
+        image: wurstmeister/kafka
+        container_name: k3
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=k3
+            - KAFKA_ZOOKEEPER_CONNECT=z1:2181, z2:2181, z3:2181
+        ports:
+            - 9092
+        depends_on:
+            - z1
+            - z2
+            - z3
+
+
+
+    z1:
+        image: zookeeper:latest
+        container_name: z1
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: >
+                server.1=0.0.0.0:2888:3888;2181
+                server.2=z2:2888:3888;2181
+                server.3=z3:2888:3888;2181
+        ports:
+            - 2181:2181
+        hostname: z1
+
+    z2:
+        image: zookeeper:latest
+        container_name: z2
+        environment:
+            ZOO_MY_ID: 2
+            ZOO_SERVERS: >
+                server.1=z1:2888:3888;2181
+                server.2=0.0.0.0:2888:3888;2181
+                server.3=z3:2888:3888;2181
+        ports:
+            - 2182:2181
+        hostname: z2
+
+    z3:
+        image: zookeeper:latest
+        container_name: z3
+        environment:
+            ZOO_MY_ID: 3
+            ZOO_SERVERS: >
+                server.1=z1:2888:3888;2181
+                server.2=z2:2888:3888;2181
+                server.3=0.0.0.0:2888:3888;2181
+        ports:
+            - 2183:2181 
+        hostname: z3
